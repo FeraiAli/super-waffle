@@ -1,0 +1,34 @@
+32 Frames/Cloud Blast 1
+32 Frames/Cloud Blast 2
+32 Frames/Cloud Blast 3
+32 Frames/Cloud Blast 4
+32 Frames/Cloud Blast 5
+32 Frames/Cloud Explosion 5
+32 Frames/Flame Blast 1
+32 Frames/Flame Burst 3
+32 Frames/Smoke Puff 2
+40 Frames/Flame Burst 1
+40 Frames/Flame Burst 2
+40 Frames/Flame Burst 4
+40 Frames/Smoke Puff 1
+48 Frames/Cloud Explosion 1
+48 Frames/Cloud Explosion 2
+48 Frames/Cloud Explosion 6
+48 Frames/Debrie Explosion 1
+48 Frames/Fireball Explosion 1
+48 Frames/Flame Puff 1
+48 Frames/Flame and Smoke 
+48 Frames/Glowing Explosion
+48 Frames/Slow Flame Burst 1
+64 Frames/Cloud Explosion 3
+64 Frames/Cloud Explosion 4
+64 Frames/Cloud Explosion 7
+64 Frames/Debrie Explosion 2
+64 Frames/Debrie Explosion 3 (No Flare) a
+64 Frames/Debrie Explosion 3 (No Flare) b
+64 Frames/Debrie Explosion 4
+64 Frames/Debrie Explosion 5
+64 Frames/Debrie Explosion 6
+64 Frames/Debrie Explosion 7
+64 Frames/Debrie Explosion 7/Glow 1/Star Burst2
+64 Frames/Smokey 1
