@@ -8,7 +8,8 @@ namespace fx
 {
     enum class Effect
     {
-        Explosion_Blast1,
+        Explosion_Begin,
+        Explosion_Blast1 = Explosion_Begin,
         Explosion_Blast2,
         Explosion_Blast3,
         Explosion_Blast4,
@@ -16,7 +17,9 @@ namespace fx
         Explosion_Cloud2,
         Explosion_Cloud3,
         Explosion_Debrie1,
-        Explosion_COUNT,
+        Explosion_END,
+
+
 
     };
 

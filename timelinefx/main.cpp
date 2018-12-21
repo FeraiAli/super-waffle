@@ -4,15 +4,17 @@
 
 #include <EventList.h>
 #include <Particle.h>
+#include <Libraries/Actions/ActionManager.h>
 
-static sf::RenderWindow window;
-static const sf::Vector2u windowSize = {1400, 900};
+using namespace Core;
+using namespace std::chrono_literals;
 
 int main()
 {
     srand(static_cast<uint32_t>(time(nullptr)));
 
-    window.create(sf::VideoMode({windowSize.x, windowSize.y}), "timelinefx");
+    const sf::Vector2u windowSize = {1400, 900};
+    sf::RenderWindow window(sf::VideoMode({windowSize.x, windowSize.y}), "timelinefx");
     window.setFramerateLimit(60);
 
     const std::string ASSET_DIR = "../timelinefx/assets/";
@@ -22,11 +24,50 @@ int main()
     //fx::debug::Inspect(ASSET_DIR + "missles/data.xml", ASSET_DIR + "missles/missles_id.txt");
     //fx::debug::Inspect(ASSET_DIR + "shoot_em_up/data.xml", ASSET_DIR + "shoot_em_up/shoot_em_up.txt", {2, 3, 5});
 
+
+    struct EmitBlast
+    {
+        explicit EmitBlast(float x, float y)
+            : pos(x, y)
+        {}
+
+        Status operator()() const
+        {
+            fx::Emit(fx::Effect::Explosion_Blast1, pos);
+            return Status::Finished;
+        }
+    private:
+        sf::Vector2f pos;
+    };
+
+    int beginX = 500;
+    int offset = 150;
+    Sequence sequenceAction
+    ({
+         EmitBlast(beginX+offset,   offset), Delay(0ms),
+         EmitBlast(beginX+offset*2, offset), Delay(0ms),
+         EmitBlast(beginX+offset*3, offset), Delay(0ms),
+
+         EmitBlast(beginX+offset*3, offset), Delay(0ms),
+         EmitBlast(beginX+offset*3, offset*2), Delay(0ms),
+         EmitBlast(beginX+offset*3, offset*3), Delay(0ms),
+
+         EmitBlast(beginX+offset*3, offset*3), Delay(0ms),
+         EmitBlast(beginX+offset*2, offset*3), Delay(0ms),
+         EmitBlast(beginX+offset, offset*3), Delay(0ms),
+
+         EmitBlast(beginX+offset, offset*3), Delay(0ms),
+         EmitBlast(beginX+offset, offset*2), Delay(0ms),
+         EmitBlast(beginX+offset, offset), Delay(0ms)
+    });
+
+    ActionManager actionMgr;
+    actionMgr.SetAction(Repeat(sequenceAction));
+    actionMgr.Start();
+
     sf::Clock clock;
     while( window.isOpen() )
     {
-        window.clear(sf::Color(122, 122, 122));
-
         sf::Event event;
         while( window.pollEvent(event) )
         {
@@ -52,31 +93,30 @@ int main()
                 }
             }
         }
+        actionMgr.Update();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         float deltaTime = clock.restart().asSeconds();
         events::OnUpdate(deltaTime);
 
-        //fx::Emit(fx::Effect::Explosion_Blast3, {rand() % windowSize.x, rand() % windowSize.y});
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        window.clear(sf::Color(122, 122, 122));
         events::OnDraw(window);
         window.display();
     }

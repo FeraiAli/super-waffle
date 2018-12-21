@@ -24,10 +24,10 @@ find_package(SFML 2 COMPONENTS system window graphics REQUIRED)
 find_package(PugiXML REQUIRED)
 
 ############################################## ADD SUBDIRECTORIES ###################################################
-add_subdirectory(core)
+add_subdirectory(Libraries)
 add_subdirectory(DataStructures)
 add_subdirectory(Events)
-add_subdirectory(SpriteBatcher)
+add_subdirectory(Sprite)
 add_subdirectory(ParticleTimelineFX)
 
 ############################################## ADD EXECUTABLE ########################################################
@@ -45,9 +45,9 @@ target_link_libraries(
     ${PROJECT_NAME}
     ${SFML_LIBRARIES}
     ${PUGIXML_LIBRARIES}
-    core
+    Libraries
     DataStructures
     Events
-    SpriteBatcher
+    Sprite
     ParticleTimelineFX
 )

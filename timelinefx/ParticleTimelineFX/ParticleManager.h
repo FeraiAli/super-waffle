@@ -1,6 +1,6 @@
 #pragma once
 #include <DataParser/TLFXParticleManager.h>
-#include "../SpriteBatcher/SpriteBatcher.h"
+#include "Sprite/Batcher/SpriteBatcher.h"
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Color.hpp>
