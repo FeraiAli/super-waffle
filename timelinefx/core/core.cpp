@@ -1,5 +1,5 @@
- 
-int core_obj_export_symbols()
+
+int core_export_symbols()
 {
-	return 0;
+    return 0;
 }
