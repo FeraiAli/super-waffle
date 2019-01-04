@@ -42,23 +42,24 @@ int main()
 
     int beginX = 500;
     int offset = 150;
+
     Sequence sequenceAction
     ({
-         EmitBlast(beginX+offset,   offset), Delay(0ms),
-         EmitBlast(beginX+offset*2, offset), Delay(0ms),
-         EmitBlast(beginX+offset*3, offset), Delay(0ms),
+         EmitBlast(beginX+offset,   offset), Delay(100ms),
+         EmitBlast(beginX+offset*2, offset), Delay(100ms),
+         EmitBlast(beginX+offset*3, offset), Delay(100ms),
 
-         EmitBlast(beginX+offset*3, offset), Delay(0ms),
-         EmitBlast(beginX+offset*3, offset*2), Delay(0ms),
-         EmitBlast(beginX+offset*3, offset*3), Delay(0ms),
+         EmitBlast(beginX+offset*3, offset), Delay(100ms),
+         EmitBlast(beginX+offset*3, offset*2), Delay(100ms),
+         EmitBlast(beginX+offset*3, offset*3), Delay(100ms),
 
-         EmitBlast(beginX+offset*3, offset*3), Delay(0ms),
-         EmitBlast(beginX+offset*2, offset*3), Delay(0ms),
-         EmitBlast(beginX+offset, offset*3), Delay(0ms),
+         EmitBlast(beginX+offset*3, offset*3), Delay(100ms),
+         EmitBlast(beginX+offset*2, offset*3), Delay(100ms),
+         EmitBlast(beginX+offset, offset*3), Delay(100ms),
 
-         EmitBlast(beginX+offset, offset*3), Delay(0ms),
-         EmitBlast(beginX+offset, offset*2), Delay(0ms),
-         EmitBlast(beginX+offset, offset), Delay(0ms)
+         EmitBlast(beginX+offset, offset*3), Delay(100ms),
+         EmitBlast(beginX+offset, offset*2), Delay(100ms),
+         EmitBlast(beginX+offset, offset), Delay(100ms)
     });
 
     ActionManager actionMgr;
@@ -95,23 +96,8 @@ int main()
         }
         actionMgr.Update();
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        auto m = static_cast<sf::Vector2f>(sf::Mouse::getPosition(window));
+        fx::Emit(fx::Effect::Explosion_Debrie1, m);
 
         float deltaTime = clock.restart().asSeconds();
         events::OnUpdate(deltaTime);

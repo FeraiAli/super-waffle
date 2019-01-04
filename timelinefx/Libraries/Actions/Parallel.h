@@ -5,7 +5,7 @@
 namespace Core
 {
 
-class Parallel
+struct Parallel
 {
     explicit Parallel(std::initializer_list<ActionFn>&& actions);
 
