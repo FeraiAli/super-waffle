@@ -7,13 +7,14 @@
 
 void TileMap::Init()
 {
-    m_agentPool.AddSystem(std::make_unique<AgentDrawer>());
     m_agentPool.AddSystem(std::make_unique<AgentArrowController>());
     m_agentPool.AddSystem(std::make_unique<AgentWASDController>());
 
     auto gravitySystem = std::make_unique<GravitySystem>();
     gravitySystem->SetTileMap(this);
     m_agentPool.AddSystem(std::move(gravitySystem));
+
+    m_agentPool.AddSystem(std::make_unique<AgentDrawer>());
 
     auto agent1 = m_agentPool.CreateAgent();
     agent1->AddTag(AgentTag::Drawable);

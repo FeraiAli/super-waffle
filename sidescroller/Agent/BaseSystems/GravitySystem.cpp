@@ -13,32 +13,31 @@ size_t GravitySystem::Requires()
 
 void GravitySystem::Process(std::vector<Agent::Ptr> agents)
 {
-    static const float gravityFactor = 8.0f;
     const auto& tiles = m_tileMap->GetTiles();
     for(auto& agent : agents)
     {
-        agent->shape.move(0.0f, gravityFactor);
-        auto agentPos = agent->shape.getPosition();
-        auto agentDownPos = agentPos.y + agent->shape.getGlobalBounds().height;
-
-        for(auto& rowTile : tiles)
+        agent->isGrounded = false;
+        for(const auto& rowTile : tiles)
         {
-            for(auto& tile : rowTile)
+            for(const auto& tile : rowTile)
             {
                 if(tile.getFillColor() != sf::Color(11, 102, 35))
                 {
                     continue;
                 }
 
+                auto agentDownPos = agent->shape.getPosition().y + agent->shape.getGlobalBounds().height;
                 if(tile.getGlobalBounds().contains(agent->shape.getPosition().x, agentDownPos))
                 {
-                     auto deltaY = agentDownPos - tile.getGlobalBounds().top;
-                     agent->shape.move(0.0f, -deltaY + 2);
-                     agent->isGrounded = true;
+                     agent->shape.setPosition(agent->shape.getPosition().x,
+                                              tile.getGlobalBounds().top - agent->shape.getGlobalBounds().height);
+                     agent->velocity.y = 0.0f;
                 }
-                else
+
+                agentDownPos = agent->shape.getPosition().y + agent->shape.getGlobalBounds().height;
+                if(tile.getGlobalBounds().contains(agent->shape.getPosition().x, agentDownPos + 10))
                 {
-                    //agent->isGrounded = false;
+                    agent->isGrounded = true;
                 }
             }
         }

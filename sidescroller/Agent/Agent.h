@@ -20,8 +20,8 @@ struct Agent
 
     bool isJumping = false;
     bool isGrounded = false;
-    std::chrono::milliseconds jumpTime = std::chrono::milliseconds(385);
     std::chrono::milliseconds jumpTimeCounter = std::chrono::milliseconds::zero();
+    std::chrono::milliseconds afterFallJumpCounter = std::chrono::milliseconds::zero();
 private:
     size_t m_tags = 0;
 };
