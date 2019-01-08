@@ -9,11 +9,11 @@ public:
     IScene() = default;
     virtual ~IScene() = default;
 
-    virtual void Init() = 0;
-    virtual void Deinit() = 0;
+    virtual void Init(){}
+    virtual void Deinit(){}
 
-    virtual void Show() = 0;
-    virtual void Hide() = 0;
+    virtual void Show(){}
+    virtual void Hide(){}
 
     virtual void Process() = 0;
 };

@@ -3,7 +3,7 @@
 #include <unordered_map>
 #include <stack>
 
-class SceneController
+class Director
 {
 public:
     void Register(const std::string& name, IScene::uPtr&& scene);
@@ -15,7 +15,6 @@ public:
 
     void InitScenes();
     void Process();
-
 private:
     using SceneHolder = std::unordered_map<std::string, IScene::uPtr>;
 

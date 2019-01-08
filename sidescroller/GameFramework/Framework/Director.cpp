@@ -1,20 +1,21 @@
-#include "SceneController.h"
+#include "Director.h"
 #include <assert.h>
 
-void SceneController::Register(const std::string &name, IScene::uPtr &&scene)
+void Director::Register(const std::string &name, IScene::uPtr &&scene)
 {
     m_scenes[name] = std::move(scene);
 }
 
-void SceneController::StartWith(const std::string &name)
+void Director::StartWith(const std::string &name)
 {
     auto iter = m_scenes.find(name);
     assert(iter != m_scenes.end() and "Start with scene that hasn't been registered!");
 
     m_currentScene = iter;
+    m_currentScene->second->Show();
 }
 
-void SceneController::Change(const std::string &name)
+void Director::Change(const std::string &name)
 {
     auto iter = m_scenes.find(name);
     assert(iter != m_scenes.end() and "Change scene that hasn't been registered!");
@@ -24,7 +25,7 @@ void SceneController::Change(const std::string &name)
     m_currentScene->second->Show();
 }
 
-void SceneController::Push(const std::string &name)
+void Director::Push(const std::string &name)
 {
     auto iter = m_scenes.find(name);
     assert(iter != m_scenes.end() and "Push scene that hasn't been registered!");
@@ -33,7 +34,7 @@ void SceneController::Push(const std::string &name)
     Change(name);
 }
 
-void SceneController::Pop()
+void Director::Pop()
 {
     assert(false == m_stackedScenes.empty() and "Can't Pop scene, the stack is empty!");
 
@@ -42,7 +43,7 @@ void SceneController::Pop()
     Change(prevSceneName);
 }
 
-void SceneController::InitScenes()
+void Director::InitScenes()
 {
     for(auto& p : m_scenes)
     {
@@ -50,7 +51,7 @@ void SceneController::InitScenes()
     }
 }
 
-void SceneController::Process()
+void Director::Process()
 {
     m_currentScene->second->Process();
 }

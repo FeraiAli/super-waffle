@@ -9,6 +9,11 @@ Random::Random(int64_t seed)
     : m_engine(seed)
 {}
 
+float Random::perlin()
+{
+    //TODO
+}
+
 bool Random::operator()(double probability)
 {
     probability = std::max(probability, 0.0);

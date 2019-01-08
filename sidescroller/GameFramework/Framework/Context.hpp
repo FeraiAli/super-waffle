@@ -69,7 +69,7 @@ bool Has()
     return Internal::GetInternalContext().Has<T>();
 }
 
-}
+} //end of namespace Context
 
 
 

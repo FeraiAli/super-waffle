@@ -1,5 +1,5 @@
 #pragma once
-#include "TraitsHelper.hpp"
+#include "../Common/TraitsHelper.hpp"
 #include <random>
 
 class Random
@@ -8,6 +8,7 @@ public:
     Random();
     Random(int64_t seed);
 
+    float perlin();
     bool operator()(double probability);
 
     template<typename T, typename std::enable_if_t<std::is_integral<T>::value>* = nullptr>

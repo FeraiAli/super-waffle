@@ -24,6 +24,8 @@ find_package(SFML 2 COMPONENTS system window graphics REQUIRED)
 
 ############################################## ADD SUBDIRECTORIES ###################################################
 add_subdirectory(GameFramework)
+add_subdirectory(TileMap)
+add_subdirectory(Agent)
 #add_subdirectory(Tweeny)
 #add_subdirectory(Actions)
 #add_subdirectory(CustomActions)
@@ -42,6 +44,8 @@ target_link_libraries(
     ${PROJECT_NAME}
     ${SFML_LIBRARIES}
     GameFramework
+    TileMap
+    Agent
     #Tweeny
     #Actions
     #CustomActions
