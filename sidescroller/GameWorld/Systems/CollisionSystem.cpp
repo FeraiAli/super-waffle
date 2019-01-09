@@ -5,7 +5,79 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 #include "../Components/Components.h"
 
-#include <iostream>
+#include <cmath>
+
+namespace AABBResolver
+{
+
+struct CollisionInfo
+{
+    sf::FloatRect bounds;
+    float area = 0.0f;
+};
+
+void resoloveCollision(Entita::Entity::Ptr agent, std::vector<CollisionInfo>&& collisions)
+{
+    if(collisions.empty())
+    {
+        return;
+    }
+
+    std::sort(collisions.begin(), collisions.end(), [](const auto& info1, const auto& info2)
+    {
+        return info1.area > info2.area;
+    });
+
+    auto& agentBody = agent->GetComponent<Body>();
+    agentBody.isGrounded = false;
+    for(auto& info : collisions)
+    {
+        sf::FloatRect agentBox = {agentBody.getPosition().x, agentBody.getPosition().y,
+                                  agentBody.size.x, agentBody.size.y};
+
+        if(false == agentBox.intersects(info.bounds))
+        {
+            continue;
+        }
+
+        float xDiff = (agentBox.left + (agentBox.width / 2)) -
+                      (info.bounds.left + (info.bounds.width / 2));
+
+        float yDiff = (agentBox.top + (agentBox.height / 2)) -
+                      (info.bounds.top + (info.bounds.height / 2));
+
+        float resolve = 0.0f;
+        if(std::abs(xDiff) > std::abs(yDiff))
+        {
+            if(xDiff > 0.0f)
+            {
+                resolve = (info.bounds.left + info.bounds.width) - agentBox.left;
+            }
+            else
+            {
+                resolve = -((agentBox.left + agentBox.width) - info.bounds.left);
+            }
+            agentBody.move(resolve, 0.0f);
+            agentBody.velocity.x = 0.0f;
+        }
+        else
+        {
+            if(yDiff > 0.0f)
+            {
+                resolve = (info.bounds.top + info.bounds.height) - agentBox.top;
+            }
+            else
+            {
+                resolve = -((agentBox.top + agentBox.height) - info.bounds.top);
+            }
+            agentBody.move(0.0f, resolve);
+            agentBody.velocity.y = 0.0f;
+
+            agentBody.isGrounded = true;
+        }
+    }
+}
+} //end of namespace AABBResolver
 
 void CollisionSystem::Process()
 {
@@ -14,42 +86,32 @@ void CollisionSystem::Process()
     auto tiles = pool.GetEntities<Tile>();
     auto agents = pool.GetEntities<Agent>();
 
-    for(const auto& tile : tiles)
+    for(auto& agent : agents)
     {
-        const auto& tileBody = tile->GetComponent<Body>();
-        sf::FloatRect tileBox = {tileBody.getPosition().x, tileBody.getPosition().y,
-                                 tileBody.size.x, tileBody.size.y};
+        auto& agentBody = agent->GetComponent<Body>();
+        agentBody.isGrounded = false;
+        sf::FloatRect agentBox = {agentBody.getPosition().x, agentBody.getPosition().y,
+                                  agentBody.size.x, agentBody.size.y};
 
-        for(auto& agent : agents)
+        std::vector<AABBResolver::CollisionInfo> collisionInfo;
+        for(const auto& tile : tiles)
         {
-            auto& agentBody = agent->GetComponent<Body>();
-            agentBody.isGrounded = false;
-
-            sf::FloatRect agentBox = {agentBody.getPosition().x, agentBody.getPosition().y,
-                                      agentBody.size.x, agentBody.size.y};
+            const auto& tileBody = tile->GetComponent<Body>();
+            sf::FloatRect tileBox = {tileBody.getPosition().x,tileBody.getPosition().y,
+                                     tileBody.size.x, tileBody.size.y};
 
             sf::FloatRect intersectArea;
-            if(tileBox.intersects(agentBox, intersectArea))
-            {
-                agentBody.setPosition(0.0f, -intersectArea.height);
-                std::cout << "Move: " << intersectArea.height << std::endl;
-            }
-//            const auto tileTopPosition = tile->GetComponent<Body>().getPosition().y;
-//            const auto agentBottomPoint = agentBody.getPosition().y + agentBody.size.y;
+            agentBox.intersects(tileBox, intersectArea);
 
-//            if(tileBox.contains(agentBody.getPosition().x, agentBottomPoint))
-//            {
-//                agentBody.setPosition(agentBody.getPosition().x, tileTopPosition - agentBody.size.y);
-//                agentBody.velocity.y = 0.0f;
-//            }
+            AABBResolver::CollisionInfo colInfo;
+            colInfo.bounds = tileBox;
+            colInfo.area = intersectArea.width * intersectArea.height;
 
-//            //Forgiving Jump
-//            if(tileBox.contains(agentBody.getPosition().x - 15, agentBottomPoint + 5) ||
-//               tileBox.contains(agentBody.getPosition().x + 15, agentBottomPoint + 5))
-//            {
-//                agentBody.isGrounded = true;
-//            }
+            collisionInfo.emplace_back(std::move(colInfo));
+
         }
+        AABBResolver::resoloveCollision(agent, std::move(collisionInfo));
     }
 }
+
 
