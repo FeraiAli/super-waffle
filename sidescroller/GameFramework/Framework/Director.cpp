@@ -12,7 +12,6 @@ void Director::StartWith(const std::string &name)
     assert(iter != m_scenes.end() and "Start with scene that hasn't been registered!");
 
     m_currentScene = iter;
-    m_currentScene->second->Show();
 }
 
 void Director::Change(const std::string &name)
@@ -48,6 +47,15 @@ void Director::InitScenes()
     for(auto& p : m_scenes)
     {
         p.second->Init();
+    }
+    m_currentScene->second->Show();
+}
+
+void Director::DeinitScenes()
+{
+    for(auto& p : m_scenes)
+    {
+        p.second->Deinit();
     }
 }
 

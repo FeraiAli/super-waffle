@@ -14,6 +14,7 @@ public:
     void Pop();
 
     void InitScenes();
+    void DeinitScenes();
     void Process();
 private:
     using SceneHolder = std::unordered_map<std::string, IScene::uPtr>;

@@ -1,0 +1,10 @@
+#pragma once
+#include "Body.h"
+#include "Skin.h"
+#include "Jumpable.h"
+#include "Collidable.h"
+#include "Movable.h"
+#include "ArrowController.h"
+#include "WASDController.h"
+#include "Tile.h"
+#include "Agent.h"
