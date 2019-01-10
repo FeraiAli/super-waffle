@@ -15,6 +15,7 @@ void GameScene::Init()
     pool.RegisterSystem<CollisionSystem>();
     pool.RegisterSystem<AIControlSystem>();
     pool.RegisterSystem<EnemySpawnSystem>();
+    pool.RegisterSystem<AttackSystem>();
 
     auto createPlayer = [&](sf::Color color)
     {
@@ -24,6 +25,7 @@ void GameScene::Init()
         player->AddComponent<Collidable>();
         player->AddComponent<Player>();
         player->AddComponent<Body>();
+        player->AddComponent<Weapon>();
         auto& skin = player->AddComponent<Skin>();
         skin.setFillColor(color);
         return player;

@@ -11,5 +11,6 @@ public:
 private:
     using EntityList = std::vector<Entita::Entity::Ptr>;
     void handleAgentToTile(const EntityList& tiles, const EntityList& agents);
+    void handleBulletToAgents(Entita::Entity::Ptr bullet, const EntityList& agents);
 };
 

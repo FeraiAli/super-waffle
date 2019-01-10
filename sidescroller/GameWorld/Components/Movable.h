@@ -2,4 +2,5 @@
 
 struct Movable
 {
+    bool ignoreGravity = false;
 };

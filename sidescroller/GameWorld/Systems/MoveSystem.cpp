@@ -51,8 +51,16 @@ namespace
             body.velocity.x = 0.0f;
         }
 
-        if(sf::Keyboard::isKeyPressed(left))  body.velocity.x = -speed;
-        if(sf::Keyboard::isKeyPressed(right)) body.velocity.x = speed;
+        if(sf::Keyboard::isKeyPressed(left))
+        {
+            body.velocity.x = -speed;
+            body.faceDir = Body::FaceDirection::Left;
+        }
+        if(sf::Keyboard::isKeyPressed(right))
+        {
+            body.velocity.x = speed;
+            body.faceDir = Body::FaceDirection::Right;
+        }
     }
 }
 
@@ -131,7 +139,10 @@ void MoveSystem::handleJumpAndMovement(EntityPtr entity, Body &body)
 
 void MoveSystem::handleAirMovement(EntityPtr entity, Body& body)
 {
-    body.velocity.y += Settings::Gravity;
+    if(false == entity->GetComponent<Movable>().ignoreGravity)
+    {
+        body.velocity.y += Settings::Gravity;
+    }
     moveBody(entity, body, Settings::AirSpeed);
 }
 

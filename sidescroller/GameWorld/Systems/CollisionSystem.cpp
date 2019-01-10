@@ -94,7 +94,17 @@ void CollisionSystem::Process()
 
     handleAgentToTile(tiles, enemies);
     handleAgentToTile(tiles, players);
-//    handleEnemiesToPlayer(players, enemies);
+
+    auto bullets = pool.GetEntities<Bullet>();
+    for(auto iter = bullets.begin(); iter != bullets.end(); ++iter)
+    {
+        if((*iter)->Owner.lock()->HasComponent<Player>())
+        {
+            handleBulletToAgents((*iter), enemies);
+        }
+    }
+
+    //handleEnemiesToPlayer(players, enemies);
 }
 
 void CollisionSystem::handleAgentToTile(const CollisionSystem::EntityList& tiles,
@@ -124,6 +134,27 @@ void CollisionSystem::handleAgentToTile(const CollisionSystem::EntityList& tiles
 
         }
         AABBResolver::resoloveCollision(agent, std::move(collisionInfo));
+    }
+}
+
+void CollisionSystem::handleBulletToAgents(Entita::Entity::Ptr bullet, const CollisionSystem::EntityList &agents)
+{
+    auto& pool = Context::Get<Entita::Pool>();
+
+    auto& bulletBody = bullet->GetComponent<Body>();
+    sf::FloatRect bulletBox = {bulletBody.getPosition().x, bulletBody.getPosition().y,
+                              bulletBody.size.x, bulletBody.size.y};
+
+    for(auto iter = agents.begin(); iter != agents.end(); ++iter)
+    {
+        auto& agentBody = (*iter)->GetComponent<Body>();
+        sf::FloatRect agentBox = {agentBody.getPosition().x, agentBody.getPosition().y,
+                                  agentBody.size.x, agentBody.size.y};
+        if(bulletBox.intersects(agentBox))
+        {
+            pool.RemoveEntity(bullet);
+            pool.RemoveEntity((*iter));
+        }
     }
 }
 

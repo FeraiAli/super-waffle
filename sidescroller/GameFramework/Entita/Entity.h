@@ -27,6 +27,8 @@ public:
 
     template<typename First, typename Second, typename... Remaining>
     bool HasComponent();
+
+    std::weak_ptr<Entity> Owner;
 private:
     using ComponentPtr = std::shared_ptr<void>;
     std::unordered_map<size_t, ComponentPtr> m_components;
