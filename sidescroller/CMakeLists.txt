@@ -25,7 +25,6 @@ find_package(SFML 2 COMPONENTS system window graphics REQUIRED)
 ############################################## ADD SUBDIRECTORIES ###################################################
 add_subdirectory(GameFramework)
 add_subdirectory(GameWorld)
-add_subdirectory(PhysicsBox2D)
 
 ############################################## ADD EXECUTABLE ########################################################
 add_executable(${PROJECT_NAME} main.cpp)
@@ -40,9 +39,7 @@ include_directories(
 target_link_libraries(
     ${PROJECT_NAME}
     ${SFML_LIBRARIES}
-    Box2D
     GameFramework
     GameWorld
-    PhysicsBox2D
 )
 

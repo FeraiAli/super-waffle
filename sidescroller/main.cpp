@@ -11,14 +11,11 @@
 #include <GameWorld/Components/Components.h>
 #include <GameWorld/Scenes/Scenes.h>
 
-#include <PhysicsBox2D/Box2DWorld.h>
 #include <GameFramework/Math/RangeMap.hpp>
 using namespace std::chrono_literals;
 
 int main()
 {
-    Context::Add<Box2DWorld>();
-
     auto& window = Context::Add<sf::RenderWindow>(sf::VideoMode{1400, 900}, "sidescroller");
     window.setFramerateLimit(60);
 

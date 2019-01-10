@@ -60,7 +60,7 @@ void MoveSystem::Process()
         }
 
         speedConstraints(body);
-        body.updatePositions();
+        body.move(body.velocity);
     }
 }
 
