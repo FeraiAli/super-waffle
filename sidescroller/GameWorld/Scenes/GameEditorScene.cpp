@@ -131,6 +131,7 @@ void GameEditorScene::loadMap()
 
 void GameEditorScene::saveMap()
 {
+    return;
     std::ofstream file(Settings::mapFileName);
 
     for(const auto& tileRow : m_tiles)
