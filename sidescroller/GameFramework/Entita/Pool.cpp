@@ -24,7 +24,7 @@ void Pool::Process()
 {
     for(auto& system : m_systems)
     {
-        system.second->Process();
+        system->Process();
     }
 }
 

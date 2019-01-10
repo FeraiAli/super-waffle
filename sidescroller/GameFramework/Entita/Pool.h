@@ -29,7 +29,7 @@ public:
     Entity::Ptr GetSingleEntity();
 //private:
     std::vector<Entity::Ptr> m_entities;
-    std::unordered_map<size_t, BaseSystem::Ptr> m_systems;
+	std::vector<BaseSystem::Ptr> m_systems;
 };
 
 
@@ -39,11 +39,11 @@ std::shared_ptr<System> Pool::RegisterSystem()
     static_assert(std::is_base_of<BaseSystem, System>::value, "System must be derived from BaseSystem!");
 
     const auto systemHash = std::type_index(typeid(System)).hash_code();
-    assert(m_systems.find(systemHash) == m_systems.end() and "System is already registered!");
+	//assert(m_systems.find(systemHash) == m_systems.end() and "System is already registered!");
 
     auto system = std::make_shared<System>();
     system->Init();
-    m_systems[systemHash] = system;
+	m_systems.emplace_back(system);
     return system;
 }
 

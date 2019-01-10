@@ -29,7 +29,9 @@ void resoloveCollision(Entita::Entity::Ptr agent, std::vector<CollisionInfo>&& c
     });
 
     auto& agentBody = agent->GetComponent<Body>();
-    agentBody.isGrounded = false;
+    auto& collidable = agent->GetComponent<Collidable>();
+    collidable.Reset();
+
     for(auto& info : collisions)
     {
         sf::FloatRect agentBox = {agentBody.getPosition().x, agentBody.getPosition().y,
@@ -51,10 +53,12 @@ void resoloveCollision(Entita::Entity::Ptr agent, std::vector<CollisionInfo>&& c
         {
             if(xDiff > 0.0f)
             {
+                collidable.Add(CollisionSide::Left);
                 resolve = (info.bounds.left + info.bounds.width) - agentBox.left;
             }
             else
             {
+                collidable.Add(CollisionSide::Right);
                 resolve = -((agentBox.left + agentBox.width) - info.bounds.left);
             }
             agentBody.move(resolve, 0.0f);
@@ -64,6 +68,7 @@ void resoloveCollision(Entita::Entity::Ptr agent, std::vector<CollisionInfo>&& c
         {
             if(yDiff > 0.0f)
             {
+                collidable.Add(CollisionSide::Top);
                 resolve = (info.bounds.top + info.bounds.height) - agentBox.top;
             }
             else
@@ -73,7 +78,7 @@ void resoloveCollision(Entita::Entity::Ptr agent, std::vector<CollisionInfo>&& c
             agentBody.move(0.0f, resolve);
             agentBody.velocity.y = 0.0f;
 
-            agentBody.isGrounded = true;
+            collidable.Add(CollisionSide::Down);
         }
     }
 }
@@ -83,13 +88,21 @@ void CollisionSystem::Process()
 {
     auto& pool = Context::Get<Entita::Pool>();
 
-    auto tiles = pool.GetEntities<Tile>();
-    auto agents = pool.GetEntities<Agent>();
+    auto tiles = pool.GetEntities<Tile, Body, Collidable>();
+    auto players = pool.GetEntities<Player, Body, Collidable>();
+    auto enemies = pool.GetEntities<Enemy, Body, Collidable>();
 
+    handleAgentToTile(tiles, enemies);
+    handleAgentToTile(tiles, players);
+//    handleEnemiesToPlayer(players, enemies);
+}
+
+void CollisionSystem::handleAgentToTile(const CollisionSystem::EntityList& tiles,
+                                        const CollisionSystem::EntityList& agents)
+{
     for(auto& agent : agents)
     {
         auto& agentBody = agent->GetComponent<Body>();
-        agentBody.isGrounded = false;
         sf::FloatRect agentBox = {agentBody.getPosition().x, agentBody.getPosition().y,
                                   agentBody.size.x, agentBody.size.y};
 
@@ -113,5 +126,4 @@ void CollisionSystem::Process()
         AABBResolver::resoloveCollision(agent, std::move(collisionInfo));
     }
 }
-
 

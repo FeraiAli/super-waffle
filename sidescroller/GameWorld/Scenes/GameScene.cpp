@@ -13,35 +13,52 @@ void GameScene::Init()
     pool.RegisterSystem<DrawSystem>();
     pool.RegisterSystem<MoveSystem>();
     pool.RegisterSystem<CollisionSystem>();
+    pool.RegisterSystem<AIControlSystem>();
+    pool.RegisterSystem<EnemySpawnSystem>();
 
-    auto player = pool.CreateEntity();
-    player->AddComponent<Movable>();
-    player->AddComponent<Jumpable>();
-    player->AddComponent<Collidable>();
-    player->AddComponent<WASDController>();
-    player->AddComponent<Agent>();
+    auto createPlayer = [&](sf::Color color)
+    {
+        auto player = pool.CreateEntity();
+        player->AddComponent<Movable>();
+        player->AddComponent<Jumpable>();
+        player->AddComponent<Collidable>();
+        player->AddComponent<Player>();
+        player->AddComponent<Body>();
+        auto& skin = player->AddComponent<Skin>();
+        skin.setFillColor(color);
+        return player;
+    };
+    auto player1 = createPlayer(sf::Color::Green);
+    player1->AddComponent<WASDController>();
 
-    auto& skin = player->AddComponent<Skin>();
-    skin.setFillColor(sf::Color::Green);
-
-    auto& body = player->AddComponent<Body>();
-    body.size = {25, 50};
-    body.setPosition(725, 50);
+    auto player2 = createPlayer(sf::Color::Magenta);
+    player2->AddComponent<ArrowController>();
 }
 
 void GameScene::Show()
 {
     auto& pool = Context::Get<Entita::Pool>();
 
-    //DEBUG - Player1 Begin Pos
-    auto player1 = pool.GetSingleEntity<WASDController>();
-    player1->GetComponent<Body>().setPosition(725, 50);
-
     auto stringMap = GameEditorScene::GetStringMap();
     const auto windowSize = Context::Get<sf::RenderWindow>().getSize();
     sf::Vector2f tileSize;
     tileSize.x = windowSize.x / GameEditorScene::GetTilesCount().x;
     tileSize.y = windowSize.y / GameEditorScene::GetTilesCount().y;
+
+    for(auto& player : pool.GetEntities<Player>())
+    {
+        auto& body = player->GetComponent<Body>();
+        body.size = tileSize;
+        body.setPosition(750, 20);
+    }
+
+    for(auto& enemy : pool.GetEntities<Enemy>())
+    {
+        auto& body = enemy->GetComponent<Body>();
+        body.size = tileSize;
+        body.velocity.x = -7.0f;
+        body.setPosition(850, 20);
+    }
 
     for(size_t y = 0; y < stringMap.size(); y++)
     {
@@ -71,10 +88,17 @@ void GameScene::Show()
 void GameScene::Hide()
 {
     auto& pool = Context::Get<Entita::Pool>();
-    auto entities = pool.GetEntities<Tile>();
-    for(auto entity : entities)
+
+    auto tiles = pool.GetEntities<Tile>();
+    for(auto tile : tiles)
     {
-        pool.RemoveEntity(entity);
+        pool.RemoveEntity(tile);
+    }
+
+    auto enemies = pool.GetEntities<Enemy>();
+    for(auto enemy : enemies)
+    {
+        pool.RemoveEntity(enemy);
     }
 }
 

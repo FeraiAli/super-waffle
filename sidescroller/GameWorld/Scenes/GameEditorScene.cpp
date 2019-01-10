@@ -14,7 +14,7 @@ const sf::Color GameEditorScene::AirColor(200, 224, 250);
 
 void GameEditorScene::Deinit()
 {
-    saveMap();
+    //saveMap();
 }
 
 void GameEditorScene::Show()
@@ -97,7 +97,7 @@ std::vector<std::string> GameEditorScene::GetStringMap()
 
 sf::Vector2u GameEditorScene::GetTilesCount()
 {
-     return {40, 30};
+     return {35, 20};
 }
 
 void GameEditorScene::loadMap()

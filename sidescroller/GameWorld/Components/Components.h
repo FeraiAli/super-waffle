@@ -6,5 +6,7 @@
 #include "Movable.h"
 #include "ArrowController.h"
 #include "WASDController.h"
+#include "SimpleAIController.h"
 #include "Tile.h"
-#include "Agent.h"
+#include "Player.h"
+#include "Enemy.h"

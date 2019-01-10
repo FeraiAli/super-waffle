@@ -20,6 +20,19 @@ namespace Settings
 
 namespace
 {
+    bool isJumpPressed(Entita::Entity::Ptr entity)
+    {
+        if(entity->HasComponent<WASDController>())
+        {
+            return sf::Keyboard::isKeyPressed(sf::Keyboard::W);
+        }
+        else if(entity->HasComponent<ArrowController>())
+        {
+            return sf::Keyboard::isKeyPressed(sf::Keyboard::Up);
+        }
+        return false;
+    };
+
     void moveBody(Entita::Entity::Ptr entity, Body& body, float speed)
     {
         sf::Keyboard::Key left = sf::Keyboard::Unknown;
@@ -29,14 +42,15 @@ namespace
         {
             left = sf::Keyboard::A;
             right = sf::Keyboard::D;
+            body.velocity.x = 0.0f;
         }
         else if(entity->HasComponent<ArrowController>())
         {
             left = sf::Keyboard::Left;
             right = sf::Keyboard::Right;
+            body.velocity.x = 0.0f;
         }
 
-        body.velocity.x = 0.0f;
         if(sf::Keyboard::isKeyPressed(left))  body.velocity.x = -speed;
         if(sf::Keyboard::isKeyPressed(right)) body.velocity.x = speed;
     }
@@ -45,7 +59,7 @@ namespace
 void MoveSystem::Process()
 {
     auto& pool = Context::Get<Entita::Pool>();
-    for(auto& entity : pool.GetEntities<Body, Movable>())
+    for(auto& entity : pool.GetEntities<Body, Movable, Collidable>())
     {
         auto& body = entity->GetComponent<Body>();
         speedDecrease(body);
@@ -56,7 +70,14 @@ void MoveSystem::Process()
         }
         else
         {
-            handleGroundMovement(entity, body);
+            if(entity->GetComponent<Collidable>().IsGrounded())
+            {
+                handleGroundMovement(entity, body);
+            }
+            else
+            {
+                handleAirMovement(entity, body);
+            }
         }
 
         speedConstraints(body);
@@ -75,13 +96,13 @@ void MoveSystem::speedConstraints(Body &body)
 void MoveSystem::handleJumpAndMovement(EntityPtr entity, Body &body)
 {
     auto& jumpSettings = entity->GetComponent<Jumpable>();
-    if(body.isGrounded)
+    if(entity->GetComponent<Collidable>().IsGrounded())
     {
         jumpSettings.afterFallJumpCounter += 15ms;
 
         handleGroundMovement(entity, body);
 
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) and
+        if (isJumpPressed(entity) and
             jumpSettings.afterFallJumpCounter >= Settings::AfterFallingJumpDelay)
         {
             jumpSettings.jumpTimeCounter = 0ms;
@@ -95,7 +116,7 @@ void MoveSystem::handleJumpAndMovement(EntityPtr entity, Body &body)
         jumpSettings.afterFallJumpCounter = 0ms;
 
         if((jumpSettings.jumpTimeCounter >= Settings::JumpTime) or
-           (false == sf::Keyboard::isKeyPressed(sf::Keyboard::W)))
+           (false == isJumpPressed(entity)))
         {
             jumpSettings.isJumping = false;
             body.velocity.y = std::max(body.velocity.y, -4.0f);
@@ -104,13 +125,13 @@ void MoveSystem::handleJumpAndMovement(EntityPtr entity, Body &body)
     else
     {
         handleAirMovement(entity, body);
-        body.velocity.y += Settings::Gravity;
     }
 
 }
 
 void MoveSystem::handleAirMovement(EntityPtr entity, Body& body)
 {
+    body.velocity.y += Settings::Gravity;
     moveBody(entity, body, Settings::AirSpeed);
 }
 

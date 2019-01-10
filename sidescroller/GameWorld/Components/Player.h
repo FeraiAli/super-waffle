@@ -1,6 +1,6 @@
 #pragma once
 
-struct Agent
+struct Player
 {
 
 };
