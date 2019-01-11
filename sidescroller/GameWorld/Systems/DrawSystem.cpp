@@ -17,4 +17,12 @@ void DrawSystem::Process()
         skin.setPosition(body.getPosition());
         window.draw(skin);
     };
+
+    for(auto entity : pool.GetEntities<Body, Drawable>())
+    {
+        auto& body = entity->GetComponent<Body>();
+        auto& drawble = entity->GetComponent<Drawable>();
+        drawble.setPosition(body.getPosition());
+        window.draw(drawble);
+    };
 }

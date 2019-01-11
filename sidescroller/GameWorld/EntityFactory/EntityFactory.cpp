@@ -2,6 +2,7 @@
 #include "GameFramework/Entita/Pool.h"
 #include "GameFramework/Framework/Context.hpp"
 #include "GameWorld/Components/Components.h"
+#include "GameFramework/Framework/ResourcesMgr.h"
 
 const sf::Vector2f EntitySettings::Size = {40, 40};
 
@@ -12,17 +13,19 @@ Entita::Entity::Ptr EntityFactory::CreateTile(sf::Vector2f pos)
     auto entity = pool.CreateEntity();
     entity->AddComponent<Tile>();
     entity->AddComponent<Collidable>();
-    entity->AddComponent<Skin>();
+    entity->AddComponent<Drawable>();
     entity->AddComponent<Body>();
 
     auto& body = entity->GetComponent<Body>();
     body.setPosition(pos);
     body.size = EntitySettings::Size;
 
-    auto& skin = entity->GetComponent<Skin>();
-    skin.setPosition(pos);
-    skin.setSize(EntitySettings::Size);
-    skin.setFillColor(sf::Color(11, 102, 35));
+    auto texture = Context::Get<ResourcesMgr>().GetTexture("box");
+    auto& drawable = entity->GetComponent<Drawable>();
+    drawable.setPosition(pos);
+    drawable.setTexture(*texture);
+    drawable.setScale(EntitySettings::Size.x / drawable.getTextureRect().width,
+                      EntitySettings::Size.y / drawable.getTextureRect().height);
 
     return entity;
 }
@@ -40,14 +43,17 @@ Entita::Entity::Ptr EntityFactory::CreatePlayer1(sf::Vector2f pos)
     player->AddComponent<Weapon>();
     player->AddComponent<Skin>();
     player->AddComponent<WASDController>();
-
-    auto& skin = player->GetComponent<Skin>();
-    skin.setPosition(pos);
-    skin.setSize(EntitySettings::Size);
-    skin.setFillColor(sf::Color::Green);
+    player->AddComponent<Drawable>();
 
     auto& body = player->GetComponent<Body>();
-    body.size = EntitySettings::Size;
+    body.size = EntitySettings::Size*2.0f;
+
+    auto texture = Context::Get<ResourcesMgr>().GetTexture("attack1");
+    auto& drawable = player->GetComponent<Drawable>();
+    drawable.setPosition(pos);
+    drawable.setTexture(*texture);
+    drawable.setScale(body.size.x / drawable.getTextureRect().width,
+                      body.size.y / drawable.getTextureRect().height);
 
     return player;
 }
@@ -75,12 +81,10 @@ Entita::Entity::Ptr EntityFactory::CreateEnemy(sf::Vector2f pos)
 
     auto& body = enemy1->GetComponent<Body>();
     body.setPosition(pos);
-    body.size = EntitySettings::Size;
+    body.size = EntitySettings::Size*2.0f;
 
     auto& skin = enemy1->GetComponent<Skin>();
-    skin.setOutlineColor(sf::Color::Black);
-    skin.setOutlineThickness(2.0f);
-    skin.setSize(EntitySettings::Size);
+    skin.setSize(body.size);
     skin.setFillColor(sf::Color(200, 50, 50));
 
     return enemy1;

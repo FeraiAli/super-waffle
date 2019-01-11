@@ -19,7 +19,7 @@ void GameScene::Init()
     pool.RegisterSystem<AttackSystem>();
 
     EntityFactory::CreatePlayer1({750, 20});
-    EntityFactory::CreatePlayer2({750, 50});
+    //EntityFactory::CreatePlayer2({750, 50});
 }
 
 void GameScene::Show()

@@ -1,6 +1,7 @@
 #pragma once
 #include "Body.h"
 #include "Skin.h"
+#include "Drawable.h"
 #include "Jumpable.h"
 #include "Collidable.h"
 #include "Movable.h"

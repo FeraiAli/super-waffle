@@ -10,6 +10,5 @@ struct Body : public sf::Transformable
     FaceDirection faceDir = FaceDirection::Left;
 
     sf::Vector2f velocity;
-    sf::Vector2f size = {40, 45};
-
+    sf::Vector2f size = {40, 40};
 };
