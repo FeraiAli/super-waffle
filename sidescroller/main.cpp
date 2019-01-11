@@ -10,13 +10,18 @@
 #include <GameWorld/Systems/Systems.h>
 #include <GameWorld/Components/Components.h>
 #include <GameWorld/Scenes/Scenes.h>
-
 #include <GameFramework/Math/RangeMap.hpp>
+#include <iostream>
+#include "CharacterParser/CharacterParser.h"
+#include "GameFramework/Framework/ResourcesMgr.h"
+
+#include <Libraries/variant.hpp>
+#include <type_traits>
 using namespace std::chrono_literals;
 
 int main()
 {
-    auto& window = Context::Add<sf::RenderWindow>(sf::VideoMode{1400, 900}, "sidescroller");
+    auto& window = Context::Add<sf::RenderWindow>(sf::VideoMode{1600, 900}, "sidescroller");
     window.setFramerateLimit(60);
 
     auto& director = Context::Add<Director>();
@@ -26,6 +31,28 @@ int main()
     director.InitScenes();
 
     //float res = Math::RangeMap(100ms, 0ms, 200ms, 1.0f, 2.0f);
+
+    Parser::CharacterParser parser;
+    auto& resMgr = Context::Add<ResourcesMgr>();
+
+    int someCounter = 1;
+    for (std::string path : parser.GetTexturePaths("knight", "attack"))
+    {
+        const std::string key = "attack" + std::to_string(someCounter++);
+        resMgr.RegisterTexture(key, path);
+    }
+
+//    resMgr.ResourcesMgr
+//    auto texture = resMgr.GetTexture("attack1");
+//    sf::Sprite spr;
+//    spr.setPosition(100, 100);
+//    spr.setTexture(*texture);
+
+//    resMgr.RegisterTexture("Box", "../freebies-game/Assets/Box.png");
+//    auto texture = resMgr.GetTexture("Box");
+//    sf::Sprite spr;
+//    spr.setTexture(*texture);
+
 
     sf::Clock clock;
     while( window.isOpen() )
@@ -62,6 +89,7 @@ int main()
 
         int32_t deltaTime = clock.restart().asMilliseconds();
         auto deltaTimeInMS = std::chrono::milliseconds(deltaTime);
+//        window.draw(spr);
 
         window.clear(sf::Color::White);
         director.Process();

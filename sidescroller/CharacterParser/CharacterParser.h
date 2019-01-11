@@ -3,9 +3,9 @@
 #include <set>
 #include <string>
 #include <map>
-#include "../Tweeny/NaturalCompare.h"
+#include "GameFramework/Math/NaturalCompare.h"
 
-namespace core
+namespace Parser
 {
 
 struct CharacterParser
@@ -15,7 +15,7 @@ public:
     using AnimIdMap = std::map<std::string, TexturePathList>;
     using CharacterNameMap = std::map<std::string, AnimIdMap>;
 
-    void Parse();
+    CharacterParser();
 
     std::vector<std::string> GetCharactersName() const;
     const AnimIdMap& GetAnimations(const std::string& characterName) const;
@@ -27,4 +27,4 @@ private:
     CharacterNameMap m_charactersMap;
 };
 
-} //end of core
+} //end of namespace Parser

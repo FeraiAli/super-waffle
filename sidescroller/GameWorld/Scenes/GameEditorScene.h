@@ -12,7 +12,6 @@ public:
     void Process() final override;
 
     static std::vector<std::string> GetStringMap();
-    static sf::Vector2u GetTilesCount();
 
     static const sf::Color SolidColor;
     static const sf::Color AirColor;
@@ -24,6 +23,5 @@ private:
     std::vector<RowTile> m_tiles;
 
     sf::RectangleShape m_selectedTile;
-    sf::Vector2f m_tileSize;
 };
 

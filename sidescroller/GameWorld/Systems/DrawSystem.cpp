@@ -14,7 +14,6 @@ void DrawSystem::Process()
     {
         auto& body = entity->GetComponent<Body>();
         auto& skin = entity->GetComponent<Skin>();
-        skin.setSize(body.size);
         skin.setPosition(body.getPosition());
         window.draw(skin);
     };

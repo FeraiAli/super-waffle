@@ -2,7 +2,9 @@
 #include <SFML/Window/Event.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <GameFramework/Framework/Context.hpp>
+#include <GameWorld/EntityFactory/EntityFactory.h>
 #include <fstream>
+#include <cmath>
 
 namespace Settings
 {
@@ -21,19 +23,11 @@ void GameEditorScene::Show()
 {
     loadMap();
 
-    m_selectedTile.setSize(m_tileSize * 0.9f);
+    m_selectedTile.setSize(EntitySettings::Size * 0.9f);
     m_selectedTile.setOutlineColor(sf::Color::Black);
     m_selectedTile.setOutlineThickness(1.0f);
     m_selectedTile.setOrigin(m_selectedTile.getSize().x / 2, m_selectedTile.getSize().y / 2);
     m_selectedTile.setFillColor(SolidColor);
-
-    for(auto& tileRow : m_tiles)
-    {
-        for(auto& tile : tileRow)
-        {
-            tile.setOutlineThickness(1.0f);
-        }
-    }
 }
 
 void GameEditorScene::Hide()
@@ -95,23 +89,20 @@ std::vector<std::string> GameEditorScene::GetStringMap()
     return tileMapString;
 }
 
-sf::Vector2u GameEditorScene::GetTilesCount()
-{
-     return {35, 20};
-}
 
 void GameEditorScene::loadMap()
 {
     auto tileMapString = GetStringMap();
     const auto windowSize = Context::Get<sf::RenderWindow>().getSize();
-    m_tileSize.x = windowSize.x / GetTilesCount().x;
-    m_tileSize.y = windowSize.y / GetTilesCount().y;
+    sf::Vector2u tilesCount;
+    tilesCount.x = static_cast<uint32_t>(std::floor(windowSize.x / EntitySettings::Size.x));
+    tilesCount.y = static_cast<uint32_t>(std::floor(windowSize.y / EntitySettings::Size.y));
 
     m_tiles.clear();
-    m_tiles.resize(GetTilesCount().y, RowTile(GetTilesCount().x));
-    for(size_t row = 0; row < GetTilesCount().y; row++)
+    m_tiles.resize(tilesCount.y, RowTile(tilesCount.x));
+    for(size_t row = 0; row < tilesCount.y; row++)
     {
-        for(size_t col = 0; col < GetTilesCount().x; col++)
+        for(size_t col = 0; col < tilesCount.x; col++)
         {
             sf::RectangleShape box;
 
@@ -121,9 +112,11 @@ void GameEditorScene::loadMap()
                 if(tileMapString[row][col] == '#') { box.setFillColor(SolidColor); }
             }
 
-            box.setSize(m_tileSize);
+            box.setSize(EntitySettings::Size);
             box.setOutlineColor(sf::Color::Black);
-            box.setPosition(col * m_tileSize.x, row * m_tileSize.y);
+            box.setOutlineThickness(1.0f);
+            box.setPosition(col * EntitySettings::Size.x, row * EntitySettings::Size.y);
+            box.setSize(EntitySettings::Size);
             m_tiles[row][col] = std::move(box);
         }
     }
@@ -149,4 +142,5 @@ void GameEditorScene::saveMap()
         file << line << '\n';
     }
 }
+
 

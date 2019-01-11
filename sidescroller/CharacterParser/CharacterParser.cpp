@@ -2,18 +2,18 @@
 #include "experimental/filesystem"
 #include <algorithm>
 
-namespace core
+namespace Settings
 {
-
-namespace config
-{
-    const std::string directory = "../freebies-game/Assets/characters/";
+    const std::string directory = "../sidescroller/Assets/characters/";
     const std::vector<std::string> extensions = {".png"};
 }
 
-void CharacterParser::Parse()
+namespace Parser
 {
-    parse(config::directory, 0);
+
+CharacterParser::CharacterParser()
+{
+    parse(Settings::directory, 0);
 }
 
 std::vector<std::string> CharacterParser::GetCharactersName() const
@@ -48,7 +48,7 @@ const CharacterParser::AnimIdMap& CharacterParser::GetAnimations(const std::stri
 const CharacterParser::TexturePathList& CharacterParser::GetTexturePaths(const std::string &characterName,
                                                                          const std::string &animId) const
 {
-    auto animations = GetAnimations(characterName);
+    const auto& animations = GetAnimations(characterName);
     auto iter = animations.find(animId);
     if(iter == animations.end())
     {
@@ -81,14 +81,14 @@ void CharacterParser::parse(const std::string &directory, int depthLevel)
             {
                 throw std::runtime_error(std::string("Reaching depth 3, but find entry that is not regular file!")
                                          + "in directory: "
-                                         + config::directory);
+                                         + Settings::directory);
             }
             else
             {
-                auto iter = std::find(config::extensions.begin(),
-                                      config::extensions.end(),
+                auto iter = std::find(Settings::extensions.begin(),
+                                      Settings::extensions.end(),
                                       entry.path().extension().string());
-                if(iter != config::extensions.end())
+                if(iter != Settings::extensions.end())
                 {
                     std::string path = entry.path().string();
                     m_charactersMap[key][animId].insert(path);
@@ -103,7 +103,7 @@ void CharacterParser::parse(const std::string &directory, int depthLevel)
         else
         {
             throw std::runtime_error("Parsing character directory: "
-                                     + config::directory
+                                     + Settings::directory
                                      + ", that depth is more than: 3");
         }
 
@@ -114,4 +114,4 @@ void CharacterParser::parse(const std::string &directory, int depthLevel)
     }
 }
 
-} //end of core
+} //end of namespace Parser

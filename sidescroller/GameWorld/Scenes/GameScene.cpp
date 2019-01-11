@@ -3,6 +3,7 @@
 #include <GameFramework/Framework/Context.hpp>
 #include "../Components/Components.h"
 #include "../Systems/Systems.h"
+#include "GameWorld/EntityFactory/EntityFactory.h"
 
 #include "GameEditorScene.h"
 
@@ -17,47 +18,24 @@ void GameScene::Init()
     pool.RegisterSystem<EnemySpawnSystem>();
     pool.RegisterSystem<AttackSystem>();
 
-    auto createPlayer = [&](sf::Color color)
-    {
-        auto player = pool.CreateEntity();
-        player->AddComponent<Movable>();
-        player->AddComponent<Jumpable>();
-        player->AddComponent<Collidable>();
-        player->AddComponent<Player>();
-        player->AddComponent<Body>();
-        player->AddComponent<Weapon>();
-        auto& skin = player->AddComponent<Skin>();
-        skin.setFillColor(color);
-        return player;
-    };
-    auto player1 = createPlayer(sf::Color::Green);
-    player1->AddComponent<WASDController>();
-
-    auto player2 = createPlayer(sf::Color::Magenta);
-    player2->AddComponent<ArrowController>();
+    EntityFactory::CreatePlayer1({750, 20});
+    EntityFactory::CreatePlayer2({750, 50});
 }
 
 void GameScene::Show()
 {
     auto& pool = Context::Get<Entita::Pool>();
-
     auto stringMap = GameEditorScene::GetStringMap();
-    const auto windowSize = Context::Get<sf::RenderWindow>().getSize();
-    sf::Vector2f tileSize;
-    tileSize.x = windowSize.x / GameEditorScene::GetTilesCount().x;
-    tileSize.y = windowSize.y / GameEditorScene::GetTilesCount().y;
 
     for(auto& player : pool.GetEntities<Player>())
     {
-        auto& body = player->GetComponent<Body>();
-        body.size = tileSize;
-        body.setPosition(750, 20);
+        player->GetComponent<Body>().setPosition(750, 20);
     }
 
     for(auto& enemy : pool.GetEntities<Enemy>())
     {
         auto& body = enemy->GetComponent<Body>();
-        body.size = tileSize;
+        body.size = EntitySettings::Size;
         body.velocity.x = -7.0f;
         body.setPosition(850, 20);
     }
@@ -68,20 +46,9 @@ void GameScene::Show()
         {
             if(stringMap[y][x] == '#')
             {
-                sf::Vector2f pos = {(x * tileSize.x), (y * tileSize.y)};
-
-                auto entity = pool.CreateEntity();
-                entity->AddComponent<Tile>();
-                entity->AddComponent<Collidable>();
-
-                auto& skin = entity->AddComponent<Skin>();
-                skin.setPosition(pos);
-                skin.setSize(tileSize);
-                skin.setFillColor(GameEditorScene::SolidColor);
-
-                auto& body = entity->AddComponent<Body>();
-                body.setPosition(pos);
-                body.size = tileSize;
+                sf::Vector2f pos = {(x * EntitySettings::Size.x),
+                                    (y * EntitySettings::Size.y)};
+                EntityFactory::CreateTile(pos);
             }
         }
     }
