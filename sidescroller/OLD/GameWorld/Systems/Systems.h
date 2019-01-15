@@ -5,3 +5,4 @@
 #include "AIControlSystem.h"
 #include "EnemySpawnSystem.h"
 #include "AttackSystem.h"
+#include "AnimationSystem.h"

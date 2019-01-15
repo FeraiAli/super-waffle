@@ -6,17 +6,12 @@
 #include <GameFramework/System/Camera.h>
 #include "GameFramework/Entita/Entity.h"
 #include "GameFramework/Entita/Pool.h"
-
-#include <GameWorld/Systems/Systems.h>
-#include <GameWorld/Components/Components.h>
-#include <GameWorld/Scenes/Scenes.h>
-#include <GameFramework/Math/RangeMap.hpp>
-#include <iostream>
-#include "CharacterParser/CharacterParser.h"
 #include "GameFramework/Framework/ResourcesMgr.h"
+#include <GameFramework/Math/RangeMap.hpp>
 
-#include <Libraries/variant.hpp>
-#include <type_traits>
+#include <GameWorld/Scenes/Scenes.h>
+#include "CharacterParser/CharacterParser.h"
+
 using namespace std::chrono_literals;
 
 int main()
@@ -26,9 +21,27 @@ int main()
     resMgr.RegisterTexture("box", "../sidescroller/Assets/Box.png");
 
     int someCounter = 1;
+    for (std::string path : parser.GetTexturePaths("knight", "idle"))
+    {
+        const std::string key = "knight_idle" + std::to_string(someCounter++);
+        resMgr.RegisterTexture(key, path);
+    }
+    someCounter = 1;
+    for (std::string path : parser.GetTexturePaths("knight", "run"))
+    {
+        const std::string key = "knight_run" + std::to_string(someCounter++);
+        resMgr.RegisterTexture(key, path);
+    }
+    someCounter = 1;
+    for (std::string path : parser.GetTexturePaths("knight", "jump"))
+    {
+        const std::string key = "knight_jump" + std::to_string(someCounter++);
+        resMgr.RegisterTexture(key, path);
+    }
+    someCounter = 1;
     for (std::string path : parser.GetTexturePaths("knight", "attack"))
     {
-        const std::string key = "attack" + std::to_string(someCounter++);
+        const std::string key = "knight_attack" + std::to_string(someCounter++);
         resMgr.RegisterTexture(key, path);
     }
 
@@ -36,7 +49,6 @@ int main()
     window.setFramerateLimit(60);
 
     auto& director = Context::Add<Director>();
-    director.Register("game_editor_scene", std::make_unique<GameEditorScene>());
     director.Register("game_scene", std::make_unique<GameScene>());
     director.StartWith("game_scene");
     director.InitScenes();
@@ -66,10 +78,6 @@ int main()
                 else if(event.key.code == sf::Keyboard::F1)
                 {
                     director.Change("game_scene");
-                }
-                else if(event.key.code == sf::Keyboard::F2)
-                {
-                    director.Change("game_editor_scene");
                 }
             }
         }

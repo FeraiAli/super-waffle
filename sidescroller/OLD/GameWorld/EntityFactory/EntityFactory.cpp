@@ -5,6 +5,7 @@
 #include "GameFramework/Framework/ResourcesMgr.h"
 
 const sf::Vector2f EntitySettings::Size = {40, 40};
+const sf::Vector2f EntitySettings::PlayerSize = {50, 80};
 
 Entita::Entity::Ptr EntityFactory::CreateTile(sf::Vector2f pos)
 {
@@ -41,19 +42,32 @@ Entita::Entity::Ptr EntityFactory::CreatePlayer1(sf::Vector2f pos)
     player->AddComponent<Player>();
     player->AddComponent<Body>();
     player->AddComponent<Weapon>();
-    player->AddComponent<Skin>();
     player->AddComponent<WASDController>();
     player->AddComponent<Drawable>();
 
     auto& body = player->GetComponent<Body>();
-    body.size = EntitySettings::Size*2.0f;
+    body.size = EntitySettings::PlayerSize;
+    body.setPosition({500,0});
 
-    auto texture = Context::Get<ResourcesMgr>().GetTexture("attack1");
     auto& drawable = player->GetComponent<Drawable>();
-    drawable.setPosition(pos);
-    drawable.setTexture(*texture);
-    drawable.setScale(body.size.x / drawable.getTextureRect().width,
-                      body.size.y / drawable.getTextureRect().height);
+    drawable.setScale({0.135f, 0.135f});
+
+    std::vector<std::string> idleAnim;
+    std::vector<std::string> runAnim;
+    std::vector<std::string> jumpAnim;
+    std::vector<std::string> attackAnim;
+    for(int i = 1; i <= 10; i++)
+    {
+        idleAnim.push_back("knight_idle" + std::to_string(i));
+        runAnim.push_back("knight_run" + std::to_string(i));
+        jumpAnim.push_back("knight_jump" + std::to_string(i));
+        attackAnim.push_back("knight_attack" + std::to_string(i));
+    }
+    drawable.AddAnimations("idle", idleAnim, std::chrono::milliseconds(500));
+    drawable.AddAnimations("run", runAnim, std::chrono::milliseconds(350));
+    drawable.AddAnimations("jump", jumpAnim, std::chrono::milliseconds(700));
+    drawable.AddAnimations("attack", attackAnim, std::chrono::milliseconds(700));
+    drawable.SetAnimation("idle");
 
     return player;
 }
@@ -81,7 +95,7 @@ Entita::Entity::Ptr EntityFactory::CreateEnemy(sf::Vector2f pos)
 
     auto& body = enemy1->GetComponent<Body>();
     body.setPosition(pos);
-    body.size = EntitySettings::Size*2.0f;
+    body.size = EntitySettings::PlayerSize;
 
     auto& skin = enemy1->GetComponent<Skin>();
     skin.setSize(body.size);

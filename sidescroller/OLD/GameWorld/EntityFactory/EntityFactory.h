@@ -5,6 +5,7 @@
 struct EntitySettings
 {
     static const sf::Vector2f Size;
+    static const sf::Vector2f PlayerSize;
 };
 
 class EntityFactory

@@ -1,5 +1,4 @@
 #pragma once
-
 #include <GameFramework/Entita/Pool.h>
 #include <GameFramework/Framework/IScene.h>
 

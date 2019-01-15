@@ -9,17 +9,23 @@ namespace
 {
     bool IsAttackPreesed(Entita::Entity::Ptr entity)
     {
-        sf::Keyboard::Key attackKey = sf::Keyboard::Unknown;
+//        sf::Keyboard::Key attackKey = sf::Keyboard::Unknown;
 
-        if(entity->HasComponent<WASDController>())
+//        if(entity->HasComponent<WASDController>())
+//        {
+//            attackKey = sf::Keyboard::Q;
+//        }
+//        else if(entity->HasComponent<ArrowController>())
+//        {
+//            attackKey = sf::Keyboard::RControl;
+//        }
+
+        if(sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
         {
-            attackKey = sf::Keyboard::Q;
+            entity->GetComponent<Weapon>().onAttackBegin = true;
+            return true;
         }
-        else if(entity->HasComponent<ArrowController>())
-        {
-            attackKey = sf::Keyboard::RControl;
-        }
-        return sf::Keyboard::isKeyPressed(attackKey);
+        return false;
     }
 }
 
@@ -30,6 +36,7 @@ void AttackSystem::Process()
     for(auto entity : pool.GetEntities<Body, Weapon>())
     {
         auto& weapon = entity->GetComponent<Weapon>();
+        weapon.onAttackBegin = false;
         if(weapon.ReadyToAttack())
         {
             weapon.delayToAttackCounter = Weapon::Duration(0);
@@ -63,7 +70,7 @@ void AttackSystem::handleGunAttack(Entita::Entity::Ptr entity)
     movable.ignoreGravity = true;
 
     auto& body = bullet->AddComponent<Body>();
-    body.setPosition(entityBody.getPosition().x, entityBody.getPosition().y);
+//    body.setPosition(entityBody.getPosition().x, entityBody.getPosition().y);
     body.size = {5,5};
 
     if(entityBody.faceDir == Body::FaceDirection::Left)

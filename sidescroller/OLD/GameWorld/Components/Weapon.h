@@ -20,4 +20,5 @@ struct Weapon
 
     const Type type = Type::Gun;
     Duration delayToAttackCounter = Duration(0);
+	bool onAttackBegin = false;
 };

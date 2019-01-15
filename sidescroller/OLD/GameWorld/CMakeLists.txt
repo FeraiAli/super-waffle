@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.7)
 
 ############################ RECURSIVELY FIND ALL FILES AND CREATE LIBRARY #############################
-set(LIBRARY_NAME Libraries)
+set(LIBRARY_NAME GameWorld)
 file(GLOB_RECURSE SOURCES "*.cpp" "*.h" "*.hpp")
 add_library(${LIBRARY_NAME} SHARED ${SOURCES})
 
