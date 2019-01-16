@@ -16,34 +16,36 @@ using namespace std::chrono_literals;
 
 int main()
 {
-    Parser::CharacterParser parser;
     auto& resMgr = Context::Add<ResourcesMgr>();
     resMgr.RegisterTexture("box", "../sidescroller/Assets/Box.png");
 
-    int someCounter = 1;
-    for (std::string path : parser.GetTexturePaths("knight", "idle"))
-    {
-        const std::string key = "knight_idle" + std::to_string(someCounter++);
-        resMgr.RegisterTexture(key, path);
-    }
-    someCounter = 1;
-    for (std::string path : parser.GetTexturePaths("knight", "run"))
-    {
-        const std::string key = "knight_run" + std::to_string(someCounter++);
-        resMgr.RegisterTexture(key, path);
-    }
-    someCounter = 1;
-    for (std::string path : parser.GetTexturePaths("knight", "jump"))
-    {
-        const std::string key = "knight_jump" + std::to_string(someCounter++);
-        resMgr.RegisterTexture(key, path);
-    }
-    someCounter = 1;
-    for (std::string path : parser.GetTexturePaths("knight", "attack"))
-    {
-        const std::string key = "knight_attack" + std::to_string(someCounter++);
-        resMgr.RegisterTexture(key, path);
-    }
+
+//    Parser::CharacterParser parser;
+
+//    int someCounter = 1;
+//    for (std::string path : parser.GetTexturePaths("knight", "idle"))
+//    {
+//        const std::string key = "knight_idle" + std::to_string(someCounter++);
+//        resMgr.RegisterTexture(key, path);
+//    }
+//    someCounter = 1;
+//    for (std::string path : parser.GetTexturePaths("knight", "run"))
+//    {
+//        const std::string key = "knight_run" + std::to_string(someCounter++);
+//        resMgr.RegisterTexture(key, path);
+//    }
+//    someCounter = 1;
+//    for (std::string path : parser.GetTexturePaths("knight", "jump"))
+//    {
+//        const std::string key = "knight_jump" + std::to_string(someCounter++);
+//        resMgr.RegisterTexture(key, path);
+//    }
+//    someCounter = 1;
+//    for (std::string path : parser.GetTexturePaths("knight", "attack"))
+//    {
+//        const std::string key = "knight_attack" + std::to_string(someCounter++);
+//        resMgr.RegisterTexture(key, path);
+//    }
 
     auto& window = Context::Add<sf::RenderWindow>(sf::VideoMode{1600, 900}, "sidescroller");
     window.setFramerateLimit(60);
@@ -82,10 +84,11 @@ int main()
             }
         }
 
+
         int32_t deltaTime = clock.restart().asMilliseconds();
         auto deltaTimeInMS = std::chrono::milliseconds(deltaTime);
 
-        window.clear(sf::Color::White);
+        window.clear(sf::Color(110, 200, 100));
         director.Process();
         window.display();
     }
