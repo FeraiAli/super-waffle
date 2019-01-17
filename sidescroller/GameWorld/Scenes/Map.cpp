@@ -28,6 +28,7 @@ void Map::Init()
             Map::Tile tile;
             tile.setSize({tileWidth, tileHeight});
             tile.setOutlineThickness(1.0f);
+            tile.setFillColor(sf::Color(0,0,0,0));
             tile.setOutlineColor(sf::Color::Black);
             tile.setPosition(tileWidth * x, tileHeight * y);
             tile.isBox = false;
@@ -53,17 +54,18 @@ void Map::Process(sf::RenderWindow &window)
     }
 
     m_mousePos = sf::Mouse::getPosition(window);
-    for (auto& background : m_mapTiles)
+    for (const auto& tileRow : m_mapTiles)
     {
-        for (auto& v : background)
+        for (const auto& tile : tileRow)
         {
             if(editorMode)
             {
-                window.draw(v);
+                window.draw(tile);
             }
-            else if(v.isBox)
+
+            if(tile.isBox)
             {
-                box.setPosition(v.getPosition());
+                box.setPosition(tile.getPosition());
                 window.draw(box);
             }
         }
@@ -81,7 +83,6 @@ void Map::editTile(bool used)
             if (tile.getGlobalBounds().contains(m_mousePos.x, m_mousePos.y))
             {
                 auto& tile = m_mapTiles[y][x];
-                tile.setFillColor(used ? sf::Color::Black : sf::Color::White);
                 tile.isBox = used;
                 break;
             }
@@ -112,7 +113,6 @@ void Map::readMap()
             if (*iter == '#')
             {
                 auto& tile = m_mapTiles[y][widthPos];
-                tile.setFillColor(sf::Color::Black);
                 tile.isBox = true;
             }
             widthPos++;

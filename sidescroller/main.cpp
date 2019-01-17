@@ -19,33 +19,13 @@ int main()
     auto& resMgr = Context::Add<ResourcesMgr>();
     resMgr.RegisterTexture("box", "../sidescroller/Assets/Box.png");
 
+    auto& parser = Context::Add<Parser::CharacterParser>();
+    for (auto key : parser.GetTexturePaths("knight", "idle"))    { resMgr.RegisterTexture(key, key); }
+    for (auto key : parser.GetTexturePaths("knight", "run"))     { resMgr.RegisterTexture(key, key); }
+    for (auto key : parser.GetTexturePaths("knight", "jump"))    { resMgr.RegisterTexture(key, key); }
+    for (auto key : parser.GetTexturePaths("knight", "attack"))    { resMgr.RegisterTexture(key, key); }
 
-//    Parser::CharacterParser parser;
-
-//    int someCounter = 1;
-//    for (std::string path : parser.GetTexturePaths("knight", "idle"))
-//    {
-//        const std::string key = "knight_idle" + std::to_string(someCounter++);
-//        resMgr.RegisterTexture(key, path);
-//    }
-//    someCounter = 1;
-//    for (std::string path : parser.GetTexturePaths("knight", "run"))
-//    {
-//        const std::string key = "knight_run" + std::to_string(someCounter++);
-//        resMgr.RegisterTexture(key, path);
-//    }
-//    someCounter = 1;
-//    for (std::string path : parser.GetTexturePaths("knight", "jump"))
-//    {
-//        const std::string key = "knight_jump" + std::to_string(someCounter++);
-//        resMgr.RegisterTexture(key, path);
-//    }
-//    someCounter = 1;
-//    for (std::string path : parser.GetTexturePaths("knight", "attack"))
-//    {
-//        const std::string key = "knight_attack" + std::to_string(someCounter++);
-//        resMgr.RegisterTexture(key, path);
-//    }
+    for (auto key : parser.GetTexturePaths("female_zombie", "idle"))    { resMgr.RegisterTexture(key, key); }
 
     auto& window = Context::Add<sf::RenderWindow>(sf::VideoMode{1600, 900}, "sidescroller");
     window.setFramerateLimit(60);
