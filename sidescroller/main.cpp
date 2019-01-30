@@ -23,9 +23,21 @@ int main()
     for (auto key : parser.GetTexturePaths("knight", "idle"))    { resMgr.RegisterTexture(key, key); }
     for (auto key : parser.GetTexturePaths("knight", "run"))     { resMgr.RegisterTexture(key, key); }
     for (auto key : parser.GetTexturePaths("knight", "jump"))    { resMgr.RegisterTexture(key, key); }
-    for (auto key : parser.GetTexturePaths("knight", "attack"))    { resMgr.RegisterTexture(key, key); }
+    for (auto key : parser.GetTexturePaths("knight", "attack"))  { resMgr.RegisterTexture(key, key); }
 
     for (auto key : parser.GetTexturePaths("female_zombie", "idle"))    { resMgr.RegisterTexture(key, key); }
+    for (auto key : parser.GetTexturePaths("female_zombie", "attack"))    { resMgr.RegisterTexture(key, key); }
+
+    for (auto key : parser.GetTexturePaths("blood", "blood_a"))    { resMgr.RegisterTexture(key, key); }
+    for (auto key : parser.GetTexturePaths("blood", "blood_b"))    { resMgr.RegisterTexture(key, key); }
+    for (auto key : parser.GetTexturePaths("blood", "blood_c"))    { resMgr.RegisterTexture(key, key); }
+    for (auto key : parser.GetTexturePaths("blood", "blood_d"))    { resMgr.RegisterTexture(key, key); }
+
+    for (auto key : parser.GetTexturePaths("fireball", "red"))    { resMgr.RegisterTexture(key, key); }
+    for (auto key : parser.GetTexturePaths("fireball", "blue"))    { resMgr.RegisterTexture(key, key); }
+    for (auto key : parser.GetTexturePaths("fireball", "pink"))    { resMgr.RegisterTexture(key, key); }
+
+    for (auto key : parser.GetTexturePaths("fire_burning", "fire"))    { resMgr.RegisterTexture(key, key); }
 
     auto& window = Context::Add<sf::RenderWindow>(sf::VideoMode{1600, 900}, "sidescroller");
     window.setFramerateLimit(60);

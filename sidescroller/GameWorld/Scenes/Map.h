@@ -13,6 +13,7 @@ public:
     void Init();
     void SaveMap();
     void Process(sf::RenderWindow& window);
+    std::vector<std::vector<Tile>>& GetMapTiles();
 
 private:
     void readMap();

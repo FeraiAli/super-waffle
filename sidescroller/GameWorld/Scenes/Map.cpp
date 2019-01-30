@@ -72,6 +72,11 @@ void Map::Process(sf::RenderWindow &window)
     }
 }
 
+std::vector<std::vector<Map::Tile>> &Map::GetMapTiles()
+{
+    return m_mapTiles;
+}
+
 void Map::editTile(bool used)
 {
     for (size_t y = 0; y < m_mapTiles.size(); ++y)

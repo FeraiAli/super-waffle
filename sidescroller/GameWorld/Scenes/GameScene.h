@@ -3,9 +3,11 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include "Animation.h"
-#include "CharacterInfo.h"
+#include "Fireball.h"
 #include "Map.h"
 #include <map>
+#include "Knight.h"
+#include "Zombie.h"
 
 class GameScene : public IScene
 {
@@ -13,18 +15,25 @@ public:
     void Init() final override;
     void Deinit() final override;
     void Process() final override;
-    void zombieProcess();
+private:
+    void resolveGravity();
+//    void checkForMeleeIntersection();
+    void checkForRangeIntersection();
+    void handleFireball();
+    void removeFireballs();
+
+    void rangeAttack();
 private:
     Map m_map;
-    CharacterInfo m_character;
+    Knight m_knight;
+    Zombie m_zombie;
+    std::vector<Fireball> m_fireballAnimations;
 
-    std::map<std::string, Animation> knightAnimations;
-    std::map<std::string, Animation> zombieAnimations;
+    std::chrono::milliseconds elapsed = std::chrono::milliseconds::zero();
+    std::chrono::milliseconds nextFireball = std::chrono::milliseconds(1000);
+    bool animateBall = false;
 
-    std::string newAnimation = "idle";
-    std::string  currentAnimation = "idle";
-
-    sf::Sprite characterSprite;
-    sf::Sprite zombieSprite;
-
+    sf::Sprite fireSprite;
+    sf::Sprite m_bloodSprite;
+    std::map<std::string, Animation> bloodAnimations;
 };

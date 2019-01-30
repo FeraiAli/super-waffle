@@ -6,14 +6,18 @@
 #include <iostream>
 using namespace std::chrono_literals;
 
-void Animation::Init(const std::vector<std::string>& animationFrames, std::chrono::milliseconds duration, bool repeatable)
+Animation::Animation(const std::vector<std::string> &animationFrames, std::chrono::milliseconds duration)
+{
+    Init(animationFrames, duration);
+}
+
+void Animation::Init(const std::vector<std::string>& animationFrames, std::chrono::milliseconds duration)
 {
     for(const auto& frame : animationFrames)
     {
         m_animationTextures.push_back(Context::Get<ResourcesMgr>().GetTexture(frame));
     }
     m_duration = duration;
-    m_repeat = repeatable;
 }
 
 void Animation::Start()
@@ -22,14 +26,15 @@ void Animation::Start()
     m_elapsed = 0ms;
 }
 
-bool Animation::IsFinished() const
+void Animation::Stop()
 {
-    return false == m_running;
+    m_running = false;
+    m_elapsed = 0ms;
 }
 
-bool Animation::IsRepeatable() const
+bool Animation::IsRunning() const
 {
-    return m_repeat;
+    return m_running;
 }
 
 const sf::Texture* Animation::Step(std::chrono::milliseconds frameTime)
