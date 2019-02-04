@@ -38,6 +38,9 @@ int main()
     for (auto key : parser.GetTexturePaths("fireball", "pink"))    { resMgr.RegisterTexture(key, key); }
 
     for (auto key : parser.GetTexturePaths("fire_burning", "fire"))    { resMgr.RegisterTexture(key, key); }
+    resMgr.RegisterTexture("slash1", "../sidescroller/Assets/slash1.png");
+    resMgr.RegisterTexture("redHealth", "../sidescroller/Assets/redHealth.png");
+    resMgr.RegisterTexture("greenHealth", "../sidescroller/Assets/greenHealth.png");
 
     auto& window = Context::Add<sf::RenderWindow>(sf::VideoMode{1600, 900}, "sidescroller");
     window.setFramerateLimit(60);
@@ -57,10 +60,11 @@ int main()
             {
                 window.close();
             }
-
+//            if( event.Type == Event.MouseButtonReleased && event.MouseButton.Button == sf::Mouse::Left )
             if(event.type == sf::Event::MouseButtonPressed)
             {
-//                events::OnMousePressed.emit(event.mouseButton);
+                director.OnMouseEvent(event.mouseButton);
+               // events::OnMousePressed.emit(event.mouseButton);
             }
 
             if(event.type == sf::Event::KeyPressed)

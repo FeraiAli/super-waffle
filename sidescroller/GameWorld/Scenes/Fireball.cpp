@@ -7,8 +7,6 @@ using namespace std::chrono_literals;
 
 namespace
 {
-    static const int startPosX = 1100;
-    static const int startPosY = 730;
     sf::Vector2f Magnitude(sf::Vector2f vec, float multiplication)
     {
         auto lenght = std::sqrt((vec.x * vec.x) + (vec.y * vec.y));
@@ -24,7 +22,7 @@ namespace
     }
 }
 
-void Fireball::Start(const sf::Vector2f& pos)
+void Fireball::Start(const sf::Vector2f& startPos, const sf::Vector2f& endPos)
 {
     m_alive = true;
     m_animation["red"].Init(utilities::GetAnimationFrames("fireball", "red"),   500ms);
@@ -33,12 +31,12 @@ void Fireball::Start(const sf::Vector2f& pos)
 
     Random random;
     iter = m_animation.find(random({"red", "pink", "blue"}));
-    m_sprite.setPosition({startPosX, startPosY});
+    m_sprite.setPosition({startPos.x, startPos.y});
 
     m_ballRect.setSize({70, 30});
     m_ballRect.setFillColor(sf::Color::White);
-    m_ballRect.setPosition({startPosX , startPosY - 5});
-    setDirection(pos);
+    m_ballRect.setPosition({startPos.x , startPos.y - 5});
+    setDirection(startPos, endPos);
 }
 
 void Fireball::Update(const sf::RectangleShape& shape)
@@ -68,7 +66,6 @@ void Fireball::Update(const sf::RectangleShape& shape)
 void Fireball::Draw(sf::RenderWindow &window)
 {
     window.draw(m_sprite);
-    window.draw(m_sprite);
 }
 
 bool Fireball::IsAlive() const
@@ -76,15 +73,15 @@ bool Fireball::IsAlive() const
     return m_alive;
 }
 
-void Fireball::setDirection(const sf::Vector2f& pos)
+void Fireball::setDirection(const sf::Vector2f& startPos, const sf::Vector2f& endPos)
 {
     sf::Vector2f destPos;
-    destPos.x = pos.x;
-    destPos.y = pos.y;
+    destPos.x = endPos.x;
+    destPos.y = endPos.y;
 
     sf::Vector2f disp;
-    disp.x = destPos.x - m_startingPos.x;
-    disp.y = destPos.y - m_startingPos.y;
+    disp.x = destPos.x - startPos.x;
+    disp.y = destPos.y - startPos.y;
     sf::Vector2f distance;
     distance.x = std::hypot(disp.x, disp.y);
     distance.y = std::hypot(disp.y, disp.x);
@@ -92,8 +89,8 @@ void Fireball::setDirection(const sf::Vector2f& pos)
     m_velocity.x = disp.x * (m_speed / distance.x);
     m_velocity.y = disp.y * (m_speed / distance.y);
 
-    double dx = double(destPos.x - 1100);
-    double dy = double(destPos.y - 730);
+    double dx = double(destPos.x - startPos.x);
+    double dy = double(destPos.y - startPos.y);
     float angle = float(atan2(dy, dx) * 180 / M_PI - 180);
     m_sprite.setRotation(angle);
 

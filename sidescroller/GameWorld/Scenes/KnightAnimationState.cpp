@@ -6,7 +6,7 @@ void KnightAnimationState::Init()
 {
     m_animations[Action::Idle].Init(utilities::GetAnimationFrames("knight", "idle"), 600ms);
     m_animations[Action::Running].Init(utilities::GetAnimationFrames("knight", "run"), 500ms);
-    m_animations[Action::Attacking].Init(utilities::GetAnimationFrames("knight", "attack"), 300ms);
+    m_animations[Action::Attacking].Init(utilities::GetAnimationFrames("knight", "attack"), 400ms);
 }
 
 void KnightAnimationState::Update(const CharacterInfo& characterInfo)
@@ -17,14 +17,14 @@ void KnightAnimationState::Update(const CharacterInfo& characterInfo)
         return;
     }
 
-    if(characterInfo.isMoving)
-    {
-        loopAnimation(Action::Running);
-    }
-    else if(characterInfo.isAttacking)
+    if(characterInfo.isAttacking)
     {
         m_animations.at(Action::Attacking).Start();
         m_action = Action::Attacking;
+    }
+    else if(characterInfo.isMoving)
+    {
+        loopAnimation(Action::Running);
     }
     else
     {

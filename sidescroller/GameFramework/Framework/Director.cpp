@@ -59,6 +59,11 @@ void Director::DeinitScenes()
     }
 }
 
+void Director::OnMouseEvent(const sf::Event::MouseButtonEvent &mouseEvent)
+{
+    m_currentScene->second->OnMouseEvent(mouseEvent);
+}
+
 void Director::Process()
 {
     m_currentScene->second->Process();

@@ -7,26 +7,26 @@ using namespace std::chrono_literals;
 
 namespace Settings
 {
-    const float AirSpeed = 8.0f;
-    const float JumpSpeed = 6.5f;
-    const float GroundSpeed = 7.0f;
-    const float MaxSpeed = 9.0f;
-    const float MaxFallingSpeed = 16.0f;
     const float Gravity = 0.5f;
+    const float MoveSpeed = 5.0f;
+    const float JumpSpeed = 6.5f;
     const std::chrono::milliseconds JumpTime = 160ms;
-    const std::chrono::milliseconds AfterFallingJumpDelay = 60ms;
 }
 
 void Knight::Init()
 {
     m_animState.Init();
+
     setScale({0.2f, 0.2f});
     setPosition(300, 750);
-    txtShield.loadFromFile("../sidescroller/Assets/shields.png");
-    shield.setTexture(txtShield);
+//    m_healthBar.Init({250, 670});
+
+    bodyRect.setSize({getGlobalBounds().width - 60, getGlobalBounds().height - 70});
+    bodyRect.setOrigin(getGlobalBounds().width / 2, getGlobalBounds().height / 2);
+    bodyRect.setFillColor(sf::Color::White);
 }
 
-void Knight::Update()
+void Knight::Update(std::vector<Zombie>& zombies)
 {
     CharacterInfo info;
     info.isGrounded = IsGrounded;
@@ -37,7 +37,12 @@ void Knight::Update()
         if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
         {
             info.isAttacking = true;
+            m_slashes.emplace_back(Slash());
+            auto scale = getScale().x > 0 ? 0.3f : -0.3f;
+            auto speed = scale > 0 ? slashSpeed : -slashSpeed;
+            m_slashes.back().Start({bodyRect.getPosition().x, bodyRect.getPosition().y}, scale, speed);
         }
+
         if(info.isGrounded and sf::Keyboard::isKeyPressed(sf::Keyboard::W))
         {
             isJumping = true;
@@ -45,26 +50,15 @@ void Knight::Update()
         }
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::A))
         {
-            m_velocity.x = -MOVE_SPEED;
+            m_velocity.x = -Settings::MoveSpeed;
             setScale(-0.2f, 0.2f);
             info.isMoving = true;
         }
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::D))
         {
-            m_velocity.x = MOVE_SPEED;
+            m_velocity.x = Settings::MoveSpeed;
             setScale(0.2f, 0.2f);
             info.isMoving = true;
-        }
-        if(sf::Mouse::isButtonPressed(sf::Mouse::Right))
-        {
-            drawShield = true;
-            shield.setScale(0.6f, 0.6f);
-            shield.setOrigin(shield.getGlobalBounds().width / 2,
-                             shield.getGlobalBounds().height / 2);
-        }
-        else
-        {
-            drawShield = false;
         }
     }
 
@@ -81,7 +75,9 @@ void Knight::Update()
         }
     }
 
-    updateBodyRect();
+//    m_healthBar.Update({getPosition().x - 50, getPosition().y - 80});
+    updateBodyRect(zombies);
+    removeSlashes();
     move(m_velocity.x, m_velocity.y);
     m_animState.Update(info);
     setTexture(*m_animState.GetTexture());
@@ -98,45 +94,33 @@ void Knight::HandleJump()
     }
 }
 
-void Knight::SetVelocity(sf::Vector2f velocity)
-{
-    m_velocity = velocity;
-}
-
 void Knight::Draw(sf::RenderWindow &window)
 {
-    if (drawShield)
+//    window.draw(bodyRect);
+//    m_healthBar.Draw(window);
+    for (auto& slash : m_slashes)
     {
-        window.draw(shield);
+        slash.Draw(window);
     }
 }
 
-void Knight::speedConstrainst()
+void Knight::updateBodyRect(std::vector<Zombie>& zombies)
 {
-    m_velocity.x = std::min(m_velocity.x, Settings::MaxSpeed);
-    m_velocity.x = std::max(m_velocity.x, -Settings::MaxSpeed);
-
-    m_velocity.y = std::min(m_velocity.y, Settings::MaxFallingSpeed);
-}
-
-void Knight::speedDecrease()
-{
-    if ((m_velocity.y < 0.0f) and
-        (m_velocity.y > (-4)) and
-        (std::abs(m_velocity.x) > 0.125f))
+    bodyRect.setPosition(getPosition().x + 25, getPosition().y + 35);
+    for (auto& slash : m_slashes)
     {
-        m_velocity.x *= 0.94875f;
+        slash.Update(zombies);
     }
 }
 
-void Knight::updateBodyRect()
+void Knight::removeSlashes()
 {
-    bodyRect.setSize({getGlobalBounds().width - 45, getGlobalBounds().height - 55});
-    bodyRect.setOrigin(getGlobalBounds().width / 2, getGlobalBounds().height / 2);
-    bodyRect.setFillColor(sf::Color::White);
-    bodyRect.setPosition(getPosition().x + 15, getPosition().y + 15);
-    shield.setPosition(bodyRect.getPosition().x - 50,
-                       bodyRect.getPosition().y - 40);
+    auto iter = remove_if(m_slashes.begin(), m_slashes.end(), [](const Slash& slash)
+    {
+       return slash.IsAlive() == false;
+    });
+    m_slashes.erase(iter, m_slashes.end());
 }
+
 
 

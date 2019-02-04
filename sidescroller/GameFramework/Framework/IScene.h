@@ -1,4 +1,5 @@
 #pragma once
+#include <SFML/Window/Event.hpp>
 #include <memory>
 
 class IScene
@@ -11,6 +12,8 @@ public:
 
     virtual void Init(){}
     virtual void Deinit(){}
+
+    virtual void OnMouseEvent(const sf::Event::MouseButtonEvent& mouseEvent){}
 
     virtual void Show(){}
     virtual void Hide(){}

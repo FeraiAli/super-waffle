@@ -4,36 +4,34 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
+#include "Zombie.h"
+#include "Slash.h"
+#include "HealthBar.h"
+#include <memory>
 
 class Knight : public sf::Sprite
 {
 public:
     using Duration = std::chrono::milliseconds;
     void Init();
-    void Update();
+    void Update(std::vector<Zombie>& zombies);
     void ResolveCollision();
     void HandleJump();
-    void SetVelocity(sf::Vector2f velocity);
 ////////////////////////////////////////////
     void Draw(sf::RenderWindow& window);
-    void HandleFireAnimation();
 ////////////////////////////////////////////
     bool IsGrounded = true;
     sf::RectangleShape bodyRect;
 private:
-    void speedConstrainst();
-    void speedDecrease();
-    void updateBodyRect();
+    void removeSlashes();
+    void updateBodyRect(std::vector<Zombie>& zombies);
 private:
-///////////////////////////////////
-    sf::Sprite shield;
-    sf::Texture txtShield;
-    bool drawShield = false;
-///////////////////////////////////
     bool isJumping = false;
-    KnightAnimationState m_animState;
-    static constexpr float MOVE_SPEED = 5.0f;
-
     sf::Vector2f m_velocity = {};
+    const float slashSpeed = 12.f;
+
+    HealthBar m_healthBar;
+    std::vector<Slash> m_slashes;
+    KnightAnimationState m_animState;
     Duration jumpTimeCounter = Duration::zero();
 };

@@ -15,6 +15,7 @@ public:
 
     void InitScenes();
     void DeinitScenes();
+    void OnMouseEvent(const sf::Event::MouseButtonEvent& mouseEvent);
     void Process();
 private:
     using SceneHolder = std::unordered_map<std::string, IScene::uPtr>;

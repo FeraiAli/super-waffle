@@ -1,23 +1,16 @@
 #include "GameScene.h"
 #include <GameFramework/Framework/Context.hpp>
-#include <GameFramework/Framework/ResourcesMgr.h>
-#include <CharacterParser/CharacterParser.h>
 #include <SFML/Window/Event.hpp>
-#include <GameFramework/System/Random.h>
 #include <iostream>
-using namespace std::chrono_literals;
-
 
 void GameScene::Init()
 {
     m_map.Init();
     m_knight.Init();
-    m_zombie.Init();
-    m_fireballAnimations.reserve(64);
-//    bloodAnimations["blood_a"].Init(GetAnimationFrames("blood", "blood_a"), 500ms);
-//    bloodAnimations["blood_b"].Init(GetAnimationFrames("blood", "blood_b"), 500ms);
-//    bloodAnimations["blood_c"].Init(getKeys("blood", "blood_c"), 700ms);
-//    bloodAnimations["blood_d"].Init(getKeys("blood", "blood_d"), 700ms);
+    m_zombies.resize(3);
+    m_zombies[0].Init({1100, 150});
+    m_zombies[1].Init({1400, 386});
+    m_zombies[2].Init({1100, 510});
 }
 
 void GameScene::Deinit()
@@ -30,20 +23,14 @@ void GameScene::Process()
     auto& window = Context::Get<sf::RenderWindow>();
     m_map.Process(window);
 
-    m_knight.Update();
-    m_zombie.Update();
-    resolveGravity();
-    rangeAttack();
-
-    for (auto& ball : m_fireballAnimations)
+    m_knight.Update(m_zombies);
+    for (auto& zombie : m_zombies)
     {
-        ball.Update(m_knight.bodyRect);
-        ball.Draw(window);
+        zombie.Update(m_knight.bodyRect);
+        zombie.Draw(window);
     }
-    removeFireballs();
-
+    resolveGravity();
     m_knight.Draw(window);
-    m_zombie.Draw(window);
     window.draw(m_knight);
 }
 
@@ -73,8 +60,25 @@ void GameScene::resolveGravity()
     }
 }
 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//void GameScene::OnMouseEvent(const sf::Event::MouseButtonEvent &mouseEvent)
+//{
+//    if(mouseEvent.button == sf::Mouse::Left)
+//    {
+
+//    }
+//}
+
 //void GameScene::checkForMeleeIntersection()
 //{
+//    bloodAnimations["blood_a"].Init(GetAnimationFrames("blood", "blood_a"), 500ms);
+//    bloodAnimations["blood_b"].Init(GetAnimationFrames("blood", "blood_b"), 500ms);
+//    bloodAnimations["blood_c"].Init(getKeys("blood", "blood_c"), 700ms);
+//    bloodAnimations["blood_d"].Init(getKeys("blood", "blood_d"), 700ms);
+
+
 //    if (m_zombie.getGlobalBounds().intersects(m_knight.getGlobalBounds()))
 //    {
 //        m_zombie.AttackChar(true);
@@ -113,31 +117,5 @@ void GameScene::resolveGravity()
 //    }
 //}
 
-void GameScene::removeFireballs()
-{
-    auto iter = remove_if(m_fireballAnimations.begin(), m_fireballAnimations.end(), [](const Fireball& ball)
-    {
-       return ball.IsAlive() == false;
-    });
-    m_fireballAnimations.erase(iter, m_fireballAnimations.end());
-}
-
-void GameScene::rangeAttack()
-{
-    elapsed += 15ms;
-
-    if (elapsed >= nextFireball)
-    {
-        m_zombie.AttackChar(true);
-        m_fireballAnimations.emplace_back(Fireball());
-        m_fireballAnimations.back().Start(m_knight.getPosition());
-
-        elapsed = 0ms;
-    }
-    else
-    {
-        m_zombie.AttackChar(false);
-    }
-}
 
 
